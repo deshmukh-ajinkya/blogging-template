@@ -10,22 +10,8 @@ import { useRouter } from 'next/navigation';
 import React, { useEffect, useRef, useState } from 'react';
 import { getBlogs, addBlog, updateBlog, deleteBlog as deleteBlogById } from '@/mock/blogData';
 import Like from '../../../../public/thumbs-up.png';
+import { MockBlog } from '@/types';
 import './style.css';
-
-type MockBlog = {
-  id: string;
-  author: { name: string };
-  title: string;
-  content: string;
-  bannerImg: string;
-  category: string;
-  likesCount: number;
-};
-
-type ExtendedBlog = MockBlog & {
-  createdAt: string;
-  comments: string[];
-};
 
 function Blog(): React.ReactElement {
   const [title, setTitle] = useState('');
