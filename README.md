@@ -1,4 +1,4 @@
-# QuickBlog Frontend
+# Blogging Template
 
 This is a digital platform where you can share your thoughts, ideas, experiences, and knowledge with a wider audience. It typically features regularly updated content in the form of blog posts
 
