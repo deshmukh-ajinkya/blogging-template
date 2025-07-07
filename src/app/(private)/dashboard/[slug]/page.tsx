@@ -6,13 +6,12 @@ import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 import { Box, InputAdornment, TextField, Typography } from '@mui/material';
 import { useParams } from 'next/navigation';
 import React, { useEffect, useRef, useState } from 'react';
-import './style.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { axiosInstance } from '@/config';
 import { RootState } from '@/store/store';
 import { setBlogs, setBlogId } from '@/store/slice/blogSlice';
-import { blogData as mockBlogData } from '@/mock/blogData';
+import { blogData as mockBlogData, updateBlog } from '@/mock/blogData';
 import { Comment } from '@/interface/IBlog.interface';
+import './style.css';
 
 const BlogDetail: React.FC = () => {
   const { slug } = useParams();
@@ -43,40 +42,11 @@ const BlogDetail: React.FC = () => {
 
   useEffect(() => {
     if (data) {
-      setLiked(data.author?.id?.includes(userID as string));
+      setLiked(data.author?.id === userID); // simplified logic
       setLikeCount(data.likesCount);
+      setComments(data.comments ?? []);
     }
   }, [data, userID]);
-
-  useEffect(() => {
-    const fetchComments = async (): Promise<void> => {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        setComments(data?.comments ?? []);
-        return;
-      }
-
-      try {
-        const response = await axiosInstance.post(
-          '/get_comment',
-          { blogID: data?.id },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
-          }
-        );
-        setComments(response.data);
-      } catch (error) {
-        console.error('Error fetching comments:', error);
-        setComments(data?.comments ?? []);
-      }
-    };
-
-    if (data?.id) {
-      fetchComments();
-    }
-  }, [data?.id]);
 
   useEffect(() => {
     if (commentsEndRef.current) {
@@ -88,60 +58,34 @@ const BlogDetail: React.FC = () => {
     return <Typography variant="h4">Blog not found</Typography>;
   }
 
-  const handleLike = async (): Promise<void> => {
-    const token = localStorage.getItem('token');
-    if (!token) return;
+  const handleLike = () => {
+    const updatedLiked = !liked;
+    const updatedCount = updatedLiked ? likeCount + 1 : likeCount - 1;
 
-    try {
-      const response = await axiosInstance.put(
-        '/like_blog',
-        { blogId: data.id, userId: userID },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
+    setLiked(updatedLiked);
+    setLikeCount(updatedCount);
 
-      setLiked(response.data.userLiked);
-      setLikeCount(response.data.likeCount);
-    } catch (error) {
-      console.error('Error liking blog:', error);
-    }
+    updateBlog({
+      ...data,
+      likesCount: updatedCount
+    });
   };
 
-  const handleSendComment = async (): Promise<void> => {
+  const handleSendComment = () => {
     if (comment.trim()) {
-      const token = localStorage.getItem('token');
-
       const newComment = {
         authorID: { id: userID as string, name: 'You' },
         content: comment
       };
 
-      // Optimistically update UI
-      setComments((prev) => [...prev, newComment]);
+      const updatedComments = [...comments, newComment];
+      setComments(updatedComments);
       setComment('');
 
-      if (!token) return;
-
-      try {
-        await axiosInstance.post(
-          '/add_comment',
-          {
-            blogID: data.id,
-            authorID: userID,
-            content: comment
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
-          }
-        );
-      } catch (error) {
-        console.error('Error adding comment:', error);
-      }
+      updateBlog({
+        ...data,
+        comments: updatedComments
+      });
     }
   };
 

@@ -1,3 +1,4 @@
+import { IBlog } from '@/interface/IBlog.interface';
 import ReactImg from '../../public/react.png'; // Adjust if needed
 
 const now = new Date();
@@ -9,7 +10,7 @@ function createDate(dayOffset: number): string {
   return date.toISOString();
 }
 
-export const blogData = [
+export let blogData = [
   {
     id: '1',
     title: 'Getting Started with React 18',
@@ -55,7 +56,7 @@ export const blogData = [
   },
   {
     id: '3',
-    title: 'State Management in React: Context vs Redux',
+    title: 'State Management in React Context vs Redux',
     description: 'Understand when to use Context API and when to reach for Redux.',
     content:
       'Managing state efficiently is critical for app performance. This post explores the differences between React Context and Redux Toolkit, including pros, cons, and code examples.',
@@ -114,11 +115,10 @@ export function addBlog(blog: (typeof blogData)[number]): void {
   blogData.push(blog);
 }
 
-export function updateBlog(updatedBlog: (typeof blogData)[number]): void {
-  const index = blogData.findIndex((b) => b.id === updatedBlog.id);
-  if (index !== -1) {
-    blogData[index] = { ...blogData[index], ...updatedBlog };
-  }
+export function updateBlog(updatedBlog: IBlog): void {
+  blogData = blogData.map((blog) =>
+    blog.id === updatedBlog.id ? { ...blog, ...updatedBlog } : blog
+  );
 }
 
 export function deleteBlog(id: string): void {

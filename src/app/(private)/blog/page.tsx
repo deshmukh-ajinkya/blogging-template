@@ -8,7 +8,7 @@ import { Box, MenuItem, Select, TextField, Typography } from '@mui/material';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useRef, useState } from 'react';
-import { getBlogs, addBlog, updateBlog, deleteBlog as deleteBlogById } from '@/mock/blogData';
+import { blogData, addBlog, updateBlog, deleteBlog as deleteBlogById } from '@/mock/blogData';
 import Like from '../../../../public/thumbs-up.png';
 import { MockBlog } from '@/types';
 import './style.css';
@@ -20,13 +20,13 @@ function Blog(): React.ReactElement {
   const [bannerImgBase64, setBannerImgBase64] = useState<string | null>(null);
   const [category, setCategory] = useState<string>('select');
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [ownBlogs, setOwnBlogs] = useState<MockBlog[]>([]);
+  const [ownBlogs, setOwnBlogs] = useState<MockBlog[]>(blogData);
   const [blogId, setBlogId] = useState<string | null | undefined>('');
   const [validation, setValidation] = useState<string | null>(null);
   const router = useRouter();
 
   const getOwnBlogs = (): void => {
-    setOwnBlogs([...getBlogs()]);
+    setOwnBlogs([...blogData]);
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>): void => {

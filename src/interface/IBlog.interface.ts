@@ -7,15 +7,18 @@ export interface Comment {
 }
 
 export interface IBlog {
-  id: string | null | undefined;
+  id: string;
+  title: string;
+  description: string;
+  content: string;
+  bannerImg: string;
   author: {
     id: string;
     name: string;
+    avatar: string;
   };
-  title: string;
-  content: string;
-  bannerImg: string;
-  likesCount: number;
   category: string;
-  comments?: Comment[]; // ✅ Add this line (optional since API might not return it)
+  likesCount: number;
+  createdAt: string;
+  comments: Comment[];
 }
