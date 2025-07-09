@@ -1,4 +1,5 @@
 'use client';
+
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { Box, Typography } from '@mui/material';
 import Image from 'next/image';
@@ -11,11 +12,11 @@ import Like from '../../../../public/thumbs-up.svg';
 import './style.css';
 
 function Dashboard(): React.ReactNode {
-  const [blog, setBlog] = useState(blogData); // Load first 5 blogs
+  const [blog, setBlog] = useState(blogData);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    setBlog(blogData); // Simulate fetching data
+    setBlog(blogData);
     dispatch(setBlogs(blogData));
   }, [dispatch]);
 
@@ -27,9 +28,7 @@ function Dashboard(): React.ReactNode {
             className="dashboard-blog-card-wrapper"
             key={index}
             href={`/dashboard/${encodeURIComponent(blogDataMock.title.toLowerCase().replace(/\s+/g, '-'))}`}
-            onClick={() => {
-              dispatch(setBlogId(String(blogDataMock.id)));
-            }}>
+            onClick={() => dispatch(setBlogId(String(blogDataMock.id)))}>
             <Image
               src={blogDataMock.bannerImg}
               alt="Banner"
@@ -40,23 +39,25 @@ function Dashboard(): React.ReactNode {
             />
             <Typography className="dashboard-blog-title">{blogDataMock.title}</Typography>
             <Typography className="dashboard-blog-description">{blogDataMock.content}</Typography>
-            <Box className="dashboard-blog-user-info">
-              <AccountCircleIcon color="secondary" className="dashboard-user-info-icon" />
-              <Typography className="dashboard-user-info-title">
-                {blogDataMock.author.name}
-              </Typography>
-            </Box>
-            <Box className="dashboard-blog-user-like">
-              <Typography className="dashboard-user-info-title">
-                {blogDataMock.likesCount}
-              </Typography>
-              <Image
-                priority
-                src={Like}
-                alt="like"
-                width={20}
-                className="dashboard-user-like-icon"
-              />
+            <Box className="dashboard-blog-footer">
+              <Box className="dashboard-blog-user-info">
+                <AccountCircleIcon color="secondary" className="dashboard-user-info-icon" />
+                <Typography className="dashboard-user-info-title">
+                  {blogDataMock.author.name}
+                </Typography>
+              </Box>
+              <Box className="dashboard-blog-user-like">
+                <Typography className="dashboard-user-info-title">
+                  {blogDataMock.likesCount}
+                </Typography>
+                <Image
+                  priority
+                  src={Like}
+                  alt="like"
+                  width={20}
+                  className="dashboard-user-like-icon"
+                />
+              </Box>
             </Box>
           </Link>
         ))}

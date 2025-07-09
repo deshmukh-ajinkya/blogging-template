@@ -26,7 +26,7 @@ const verifyMockToken = (token: string): JwtPayload | null => {
   if (token === 'mocked_jwt_token_1234567890') {
     return {
       userId: 'mockUserId',
-      name: 'Demo User'
+      name: 'Demo'
     }; // Mock payload
   }
   return null;
